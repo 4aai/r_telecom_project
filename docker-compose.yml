@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+
+#=============================================[frontend]===============
+  frontend:
+    build: frontend/
+    command: apache2ctl -D FOREGROUND
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+    # environment:
+    #   -
+
+#=============================================[backend]================
+  backend:
+    build: backend/
+    command: python3 app.py
+    ports:
+      - 8888:8888
+    depends_on:
+      - rabbitmq
+    # environment:
+    #   -
+
+#=============================================[rabbitmq]===============
+  rabbitmq:
+    build: rabbitmq/
+    command: docker-entrypoint.sh rabbitmq-server
+    ports:
+      - 15672:15672
+      - 15674:15674
+      - 25672:25672
+      - 5672:5672
+      - 61613:61613
+    depends_on:
+      - servicedb
+    environment:
+      - RABBITMQ_DEFAULT_VHOST=virtualhost
+#=============================================[servicedb]==============
+  servicedb:
+    build: servicedb/
+    command: uvicorn main:app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    # environment:
+    #   -
+
+#=============================================[db]=====================
+  db:
+    image: mariadb
+    # command: ./
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root 
+      - MYSQL_DATABASE=appeals_db
