@@ -1,10 +1,22 @@
 from database import db
 from fastapi import FastAPI, Request
 import subprocess
+import sqlalchemy
 import time 
 
 time.sleep(10)
+metadata = sqlalchemy.MetaData()
 
+notes = sqlalchemy.Table(
+    "appeals_table",
+    metadata,
+    sqlalchemy.Column("author_id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("last_name", sqlalchemy.VARCHAR(255)),
+    sqlalchemy.Column("first_name", sqlalchemy.VARCHAR(255)),
+    sqlalchemy.Column("patronymic_name", sqlalchemy.VARCHAR(255)),
+    sqlalchemy.Column("phone_number", sqlalchemy.VARCHAR(255)),
+    sqlalchemy.Column("text_area", sqlalchemy.TEXT),
+)
 
 app = FastAPI()
 
